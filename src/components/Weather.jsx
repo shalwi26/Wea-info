@@ -40,7 +40,7 @@ const Weather = () => {
       <div className='search-bar'>
         <input 
           type="text"
-          placeholder='search'
+          placeholder='Enter city'
           value={cityInput}
           onChange={(e) => setCityInput(e.target.value)}/>
         <img
