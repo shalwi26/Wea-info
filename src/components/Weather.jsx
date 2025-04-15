@@ -10,20 +10,22 @@ import wind_icon from '../assets/wind.png'
 import humidity_icon from '../assets/humidity.png'
 const Weather = () => {
     const [weatherData, setWeatherData] = useState(false);
+    const [cityInput, setCityInput] = useState('');
     // const allIcons={
     //     "01d":
     // }
-    const search = async ()=>{
+    const search = async (city)=>{
         try{
-            const url= `https://api.openweathermap.org/data/2.5/weather?q={city name}&units=metric&appid=${import.meta.env.VITE_APP_ID}`;
+            const url= `https://wttr.in/${city}?format=j1`;
             const response = await fetch(url);
             const data = await response.json();
             console.log(data);
+            const current = data.current_condition[0];
             setWeatherData({
-                humidity:data.main.humidity,
-                windSpeed:data.wind.speed,
-                temperature: Math.floor(data.main.temp),
-                //location: data.
+              humidity: current.humidity,
+              windSpeed: current.windspeedKmph,
+              temperature: Math.floor(current.temp_C),
+              location: city
             })
         } catch (error){
 
@@ -31,29 +33,42 @@ const Weather = () => {
 
     }
     useEffect(()=>{
-        search("London")
+        search("Patna")
     },[])
   return (
     <div className='weather'>
       <div className='search-bar'>
-        <input type="text" placeholder='search'/>
-        <img src={search_icon} alt="" />
+        <input 
+          type="text"
+          placeholder='search'
+          value={cityInput}
+          onChange={(e) => setCityInput(e.target.value)}/>
+        <img
+          src={search_icon}
+          alt="Search"
+          onClick={() => {
+            if (cityInput.trim()) {
+              search(cityInput.trim()); // 👈 triggers weather search
+              setCityInput(''); // Optional: clear input after search
+            }
+          }}
+            />
       </div>
       <img src={clear_icon} alt="" className='weather-icon'/>
-      <p className='temperature'>16deg cel</p>
-      <p className='location'>London</p>
+      <p className='temperature'>{weatherData.temperature}°C</p>
+      <p className='location'>{weatherData.location}</p>
       <div className="weather-data">
         <div className="col">
             <img src={humidity_icon} alt="" />
             <div>
-                <p>91 %</p>
+                <p>{weatherData.humidity} %</p>
                 <span>Humidity</span>
             </div>
         </div>
         <div className="col">
             <img src={wind_icon} alt="" />
             <div>
-                <p>3.6 Km/h</p>
+                <p>{weatherData.windSpeed} Km/h</p>
                 <span>Wind Speed</span>
             </div>
         </div>
