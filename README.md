@@ -1,1 +1,2 @@
-app url : https://shalwi26.github.io/Wea-info/
+Application deployed url : wea-info-tau.vercel.app
+
